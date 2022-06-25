@@ -1,0 +1,70 @@
+                   :root {
+                      --color: white;
+                  }
+                  
+                  --color html[data-theme="dark"] {
+                      color: white;
+                      background-color: black;
+                  }
+                  
+                  .header {
+                      width: 100vw;
+                      height: 28vh;
+                      background-image: url('../images/bg-desktop-light.jpg');
+                      position: relative;
+                      display: flex;
+                      flex-direction: column;
+                  }
+                  
+                  .header-internal {
+                      position: absolute;
+                      left: 30vw;
+                      width: 40vw;
+                      height: 20vh;
+                      display: flex;
+                      flex-direction: row;
+                      justify-content: space-between;
+                      align-items: center;
+                  }
+                  
+                  .input {
+                      position: absolute;
+                      top: 15vh;
+                      left: 40vw;
+                      width: 28vw;
+                      height: 5vh;
+                  }
+                  
+                  .list {
+                      width: 35vw;
+                      height: 50vh;
+                      position: absolute;
+                      top: 26vh;
+                      left: 40.5vw;
+                      background-color: white;
+                      border: 2px solid gold
+                  }
+                  
+                  .list ul li input {
+                      margin-right: 50px;
+                  }
+                  
+                  .control {
+                      display: flex;
+                      flex-direction: row;
+                      justify-content: space-between;
+                      padding-top: 3vh;
+                  }
+                  
+                  .list ul li {
+                      list-style: none;
+                  }
+                  
+                  .control li a {
+                      text-decoration: none;
+                  }
+                  
+                  #group {
+                      height: 36vh;
+                      overflow-y: scroll;
+                  }
