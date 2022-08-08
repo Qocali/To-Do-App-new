@@ -1,96 +1,106 @@
-var liste = [];
-var input = document.querySelector('.input');
-var delate = document.querySelector("#bt");
-var get = document.querySelector('.get');
-var dark = document.querySelector('.dark-light');
-var html = document.querySelector('html[data-theme =light]');
-const control = document.querySelector('.control');
-get.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const { username } = get.elements;
-    if (username.value === '') {
-        return 0;
-    }
-    liste.push({ user: username.value, completed: false });
-    span.textContent++;
-    elave(liste)
-    input.value = "";
-})
+const theme = document.getElementById("theme");
+const Input_item = document.getElementById("addItem");
+const List_of_Items = document.querySelector(".content ul");
+const itemsLeft = document.querySelector(".items-left span");
 
-function elave(liste) {
-    let id = 0;
-    let html = "";
-    liste.forEach(element => {
-        html += `<li id='li'>
-            <input  id="check" ${element.completed? 'checked':''} class="${id}" type ="checkbox" /> ${element.user}<button id="bt" class="btn btn-danger" style="margin-left:150px;margin-top:10px">Delete</button></li>`
-        id++;
+itemsLeft.innerText = document.querySelectorAll(
+  '.list-item input[type="checkbox"]'
+).length;
+
+theme.addEventListener("click", function () {
+  document.querySelector("body").classList = [
+    theme.checked ? "lightTheme" : "darkTheme",
+  ];
+});
+
+document.querySelector(".add_item span").addEventListener("click", function () {
+  if (Input_item.value.length > 0) {
+    createNewTodoItem(Input_item.value);
+    Input_item.value = "";
+  }
+});
+
+Input_item.addEventListener("keypress", function (event) {
+  if (event.charCode === 13 && Input_item.value.length > 0) {
+    createNewTodoItem(Input_item.value);
+    Input_item.value = "";
+  }
+});
+
+function createNewTodoItem(text) {
+  const el = document.createElement("li");
+  el.classList.add("rows");
+
+  el.innerHTML = `
+        <label class="list-item">
+            <input type="checkbox" name="todoItem">
+            <span class="checkmark"></span>
+            <span class="text">${text}</span>
+        </label>
+        <span class="remove"></span>
+    `;
+
+  if (
+    document.querySelector('.change input[type="radio"]:checked').id ===
+    "completed"
+  ) {
+    el.classList.add("hidden");
+  }
+  List_of_Items.append(el);
+  updateItemsCount(1);
+}
+
+function updateItemsCount(number) {
+  itemsLeft.innerText = +itemsLeft.innerText + number;
+}
+
+function removeTodoItem(el) {
+  el.remove();
+  updateItemsCount(-1);
+}
+
+List_of_Items.addEventListener("click", function (event) {
+  if (event.target.classList.contains("remove")) {
+    removeTodoItem(event.target.parentElement);
+  }
+});
+
+document.querySelector(".clear").addEventListener("click", function (event) {
+  document
+    .querySelectorAll('.list-item input[type="checkbox"]:checked')
+    .forEach((item) => {
+      removeTodoItem(item.closest("li"));
     });
-    group.innerHTML = html;
-}
-
-function delatelist(id) {
-
-    liste.splice(id, 1)
-    span.textContent > 0 ? span.textContent-- : span.textContent == 0;
-    elave(liste)
-}
-const clear = (list) => {
-    list.forEach(element => {
-        let clearindex = liste.findIndex(x => x.user == list.user);
-        liste.splice(clearindex, 1)
-    });
-}
-group.addEventListener('click', function(e) {
-    if (e.target.tagName == "BUTTON") {
-        let id = Number(e.target.previousElementSibling.className);
-        delatelist(id);
-    }
 });
-group.addEventListener('change', function(e) {
-    if (e.target.tagName === 'INPUT') {
-        const check = e.target;
-        if (check.checked) {
-            check.parentElement.style.textDecoration = 'line-through';
-            let index = liste.findIndex(x => x.user = (check.parentElement.childNodes[2].textContent));
-            liste[index].completed = "true";
-            span.textContent > 0 ? span.textContent-- : span.textContent == 0;
 
-
-        } else {
-            span.textContent > 0 ? span.textContent++ : span.textContent == 0;
-            check.parentElement.style.textDecoration = 'none';
-            let index = liste.findIndex(x => x.user = (check.parentElement.childNodes[2].textContent));
-            liste[index].completed = "false";
-        }
-    }
+document.querySelectorAll(".change input").forEach((radio) => {
+  radio.addEventListener("change", function (event) {
+    changeTodoItems(event.target.id);
+  });
 });
-control.addEventListener('click', (e) => {
-    e.preventDefault();
-    let content = e.target.textContent;
-    console.log(content);
-    if (e.target.tagName === 'BUTTON') {
-        switch (content) {
-            case "Completed":
-                elave(liste.filter(x => x.completed === "true"))
-                break;
-            case "Active":
-                elave(liste.filter(x => x.completed === "false"));
-                break;
-            case "Clear Completed":
-                clear(liste.filter(x => x.completed === "true"))
-                break;
-            case "All":
-                elave(liste);
-                break;
-        }
-    }
-});
-dark.addEventListener('click', () => {
-    let dataTheme = document.documentElement.dataset;
-    if (dataTheme.theme === 'dark') {
-        dataTheme.theme = 'light';
-    } else {
-        dataTheme.theme = 'dark';
-    }
 
-})
+function changeTodoItems(id) {
+  const allItems = List_of_Items.querySelectorAll("li");
+
+  switch (id) {
+    case "all":
+      allItems.forEach(function (item) {
+        item.classList.remove("hidden");
+      });
+      break;
+    case "active":
+      allItems.forEach(function (item) {
+        item.querySelector("input").checked
+          ? item.classList.add("hidden")
+          : item.classList.remove("hidden");
+      });
+      break;
+    default:
+      allItems.forEach(function (item){
+        !item.querySelector("input").checked
+          ? item.classList.add("hidden")
+          : item.classList.remove("hidden");
+      });
+      break;
+  }
+}
